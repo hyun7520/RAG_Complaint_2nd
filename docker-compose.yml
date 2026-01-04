@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: pgvector/pgvector:pg16 # pgvector가 미리 설치된 이미지
+    container_name: complaint-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # 본인이 사용할 비밀번호
+      POSTGRES_DB: complaint_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data # 데이터 보존을 위한 볼륨 설정
+
+  # (선택) 웹에서 DB를 편하게 관리하고 싶다면 추가
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: complaint-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"

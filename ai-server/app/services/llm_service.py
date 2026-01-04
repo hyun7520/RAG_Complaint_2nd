@@ -19,12 +19,19 @@ async def get_normalization(body: str):
     response = requests.post(f"{OLLAMA_URL}/generate", json={
         "model": "llama3.1", "prompt": prompt, "format": "json", "stream": False
     })
-    return json.loads(response.json()['response'])
+    if response.status_code == 200:
+        # JSON 문자열 내부의 응답 텍스트를 파싱
+        return json.loads(response.json()['response'])
+    else:
+        raise Exception(f"Ollama API Error: {response.text}")
 
 async def get_embedding(text: str):
-    """텍스트를 벡터로 변환합니다. (설계상 1536차원 필요) """
-    # 주의: 사용 중인 모델의 차원이 1536인지 확인 필수!
+    """텍스트를 벡터로 변환합니다. (설계상 1024차원 필요) """
+    # 주의: 사용 중인 모델의 차원이 1024인지 확인 필수!
     response = requests.post(f"{OLLAMA_URL}/embeddings", json={
         "model": "mxbai-embed-large", "prompt": text
     })
-    return response.json()['embedding']
+    if response.status_code == 200:
+        return response.json()['embedding']
+    else:
+        raise Exception(f"Ollama Embedding Error: {response.text}")
