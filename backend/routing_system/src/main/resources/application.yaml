@@ -1,6 +1,7 @@
 spring:
   application:
     name: routing_system
+<<<<<<< HEAD
   docker:
     compose:
       enabled: false
@@ -8,3 +9,5 @@ spring:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
       - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+=======
+>>>>>>> b74b1443175aa2666c6822942de3c1552ab52947
