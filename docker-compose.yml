@@ -18,6 +18,17 @@ services:
       - ./postgres_data:/var/lib/postgresql/data
     networks:
       - complaint-network
+  langflow:
+    image: langflowai/langflow:latest
+    ports:
+      - "7860:7860"
+    environment:
+      - LANGFLOW_HOST=0.0.0.0
+      #- LANGFLOW_DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/complaint_db
+    depends_on:
+      - db
+    networks:
+    - complaint-network
 
 networks:
   complaint-network:
