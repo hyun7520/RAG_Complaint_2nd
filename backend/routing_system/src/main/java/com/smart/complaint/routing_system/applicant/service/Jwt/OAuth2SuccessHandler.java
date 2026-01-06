@@ -1,4 +1,4 @@
-package com.smart.complaint.routing_system.applicant.service;
+package com.smart.complaint.routing_system.applicant.service.Jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +26,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // JWT 생성
         String token = tokenProvider.createJwtToken(name, id);
+
+        System.out.println(token);
 
         // 프론트엔드(8000포트)로 토큰을 쿼리 스트링에 담아 리다이렉트
         String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/api/home")

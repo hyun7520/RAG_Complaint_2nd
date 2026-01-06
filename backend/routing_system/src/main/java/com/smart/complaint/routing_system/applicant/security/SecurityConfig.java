@@ -1,7 +1,9 @@
 package com.smart.complaint.routing_system.applicant.security;
 
-import com.smart.complaint.routing_system.applicant.service.OAuth2Service;
-import com.smart.complaint.routing_system.applicant.service.OAuth2SuccessHandler;
+import com.smart.complaint.routing_system.applicant.service.Jwt.JwtAuthenticationFilter;
+import com.smart.complaint.routing_system.applicant.service.Jwt.JwtTokenProvider;
+import com.smart.complaint.routing_system.applicant.service.Jwt.OAuth2Service;
+import com.smart.complaint.routing_system.applicant.service.Jwt.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,6 +20,7 @@ public class SecurityConfig {
 
     private final OAuth2Service oAuth2Service;
     private final OAuth2SuccessHandler successHandler;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,7 +44,8 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login") // 로그아웃 성공 시 이동할 페이지
                         .invalidateHttpSession(true) // HTTP 세션 삭제
                         .deleteCookies("JSESSIONID") // 세션 쿠키 삭제
-                );
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -1,8 +1,6 @@
-package com.smart.complaint.routing_system.applicant.service;
+package com.smart.complaint.routing_system.applicant.service.Jwt;
 
 import com.smart.complaint.routing_system.applicant.dto.OAuth2Attributes;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

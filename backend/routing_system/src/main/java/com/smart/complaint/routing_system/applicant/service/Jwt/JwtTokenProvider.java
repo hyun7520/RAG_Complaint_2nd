@@ -1,4 +1,4 @@
-package com.smart.complaint.routing_system.applicant.service;
+package com.smart.complaint.routing_system.applicant.service.Jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -31,6 +31,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
+    // JWT 생성
     public String createJwtToken(String name, String email) {
         // 토큰에 담을 정보: 이름, 이메일
         Claims claims = Jwts.claims().setSubject(name);
@@ -48,5 +49,21 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 // 서명 후 압축 - String
                 .compact();
+    }
+
+    // 토큰에서 유저 정보 추출
+    public String getProviderId(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    // 토큰 유효성 검증
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
