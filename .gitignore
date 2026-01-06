@@ -32,3 +32,4 @@ node_modules/
 crawling/data
 *.csv
 *.json
+postgres_data/
