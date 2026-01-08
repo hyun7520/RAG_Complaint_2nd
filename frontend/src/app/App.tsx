@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LoginPage } from './components/applicant/LoginPage';
+import { LoginPage } from './components/LoginPage';
 import { Layout } from './components/Layout';
 import { ComplaintListPage } from './components/ComplaintListPage';
 import { ComplaintDetailPage } from './components/ComplaintDetailPage';
