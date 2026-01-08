@@ -5,41 +5,47 @@ import axios from 'axios';
 
 const ApplicationLoginPage = () => {
     const navigate = useNavigate();
+    // 토큰이 이미 있다면 우선 로딩 상태를 true로 유지하여 화면 노출을 막습니다.
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+
+        console.log("저장된 토큰:", token);
+
+        // 1. 토큰이 아예 없으면 즉시 로딩 해제 -> 로그인 버튼 노출
+        if (!token) {
+            setIsLoading(false);
+            return;
+        }
+
         const validateToken = async () => {
-            const token = localStorage.getItem('accessToken');
-
-            // 1. 토큰 자체가 없으면 그냥 로그인 페이지에 머뭄
-            if (!token) {
-                setIsLoading(false);
-                return;
-            }
-
             try {
-                // 2. 백엔드에 토큰 유효성 검사 요청
-                // 헤더에 Authorization: Bearer <token> 을 실어 보냅니다.
+                // 2. 백엔드 검증 시도
                 await axios.get('http://localhost:8080/api/auth/validate', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
 
-                // 3. 검증 성공(200 OK) 시 메인 페이지로 이동
+                // 3. 성공 시 메인으로 이동 (이동 중에도 화면은 여전히 로딩 상태)
                 navigate('/applicant/main');
             } catch (error) {
-                // 4. 검증 실패(401 등) 시 로컬 스토리지 비우고 로그인 페이지 유지
-                console.error("토큰이 만료되었거나 유효하지 않습니다.");
+                console.error("토큰 만료/유효하지 않음");
                 localStorage.removeItem('accessToken');
-                setIsLoading(false);
+                setIsLoading(false); // 실패 시에만 로그인 버튼 노출
             }
         };
 
         validateToken();
     }, [navigate]);
 
-    if (isLoading) return <div>사용자 인증 확인 중...</div>;
+    // 로딩 중일 때는 빈 화면이나 스피너만 보여줍니다.
+    if (isLoading) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <p>사용자 인증 확인 중...</p>
+            </div>
+        );
+    }
 
     // 백엔드(Spring Boot)의 OAuth2 엔드포인트로 이동시키는 함수
     const handleLogin = (provider: string) => {

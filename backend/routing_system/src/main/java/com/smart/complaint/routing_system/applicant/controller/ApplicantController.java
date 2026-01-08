@@ -28,12 +28,13 @@ public class ApplicantController {
 
     // 토큰 유효성 검사 엔드포인트
     @GetMapping("/api/auth/validate")
-    public ResponseEntity<?> validateToken(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<?> validateToken(@AuthenticationPrincipal String providerId) {
         // JwtAuthenticationFilter를 거쳐 여기까지 왔다면 토큰은 유효한 것입니다.
-        if (userPrincipal != null) {
-            return ResponseEntity.ok().build(); // 200 OK
+        if (providerId == null) {
+            System.out.println("컨트롤러: 인증된 유저 정보가 없습니다.");
+            return ResponseEntity.status(401).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 401
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/api/complaints")
