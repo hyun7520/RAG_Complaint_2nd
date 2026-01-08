@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/complaints")
+@RequestMapping("/api/agent/complaints")
 @RequiredArgsConstructor
 public class ComplaintController {
 
