@@ -2,7 +2,7 @@ package com.smart.complaint.routing_system.applicant.dto;
 
 import com.smart.complaint.routing_system.applicant.domain.ComplaintStatus;
 import com.smart.complaint.routing_system.applicant.domain.UrgencyLevel;
-import com.smart.complaint.routing_system.applicant.entitiy.Complaint;
+import com.smart.complaint.routing_system.applicant.entity.Complaint;
 import lombok.Data;
 import java.time.format.DateTimeFormatter;
 

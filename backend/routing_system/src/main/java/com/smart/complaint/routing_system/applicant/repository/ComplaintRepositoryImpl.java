@@ -1,23 +1,29 @@
 package com.smart.complaint.routing_system.applicant.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.smart.complaint.routing_system.applicant.domain.ComplaintStatus;
 import com.smart.complaint.routing_system.applicant.domain.UrgencyLevel;
 import com.smart.complaint.routing_system.applicant.dto.ComplaintResponse;
 import com.smart.complaint.routing_system.applicant.dto.ComplaintSearchCondition;
+import com.smart.complaint.routing_system.applicant.dto.ComplaintSearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
-import static com.smart.complaint.routing_system.applicant.entitiy.QComplaint.complaint;
+import static com.smart.complaint.routing_system.applicant.entity.QComplaint.complaint;
+import com.smart.complaint.routing_system.applicant.entity.QComplaintNormalization; // 팀원의 Q클래스
 
 @Repository
 @RequiredArgsConstructor
 public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+    private final QComplaintNormalization normalization = QComplaintNormalization.complaintNormalization;
 
     @Override
     public List<ComplaintResponse> search(Long departmentId, ComplaintSearchCondition condition) {
@@ -40,6 +46,31 @@ public class ComplaintRepositoryImpl implements ComplaintRepositoryCustom {
         return results.stream()
                 .map(ComplaintResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ComplaintSearchResult> findSimilarComplaint(double[] queryEmbedding, int limit) {
+        String vectorString = java.util.Arrays.toString(queryEmbedding);
+
+        // PGVector 코사인 거리 계산 (1 - Cosine Distance)
+        NumberTemplate<Double> similarity = Expressions.numberTemplate(Double.class,
+                "1 - ({0} <-> cast({1} as vector))",
+                normalization.embedding,
+                vectorString);
+
+        return queryFactory
+                .select(Projections.constructor(ComplaintSearchResult.class,
+                        complaint.id,
+                        complaint.title,
+                        complaint.body,
+                        similarity.as("score")
+                ))
+                .from(normalization)
+                .join(normalization.complaint, complaint)
+                .where(normalization.isCurrent.isTrue())
+                .orderBy(similarity.desc())
+                .limit(limit)
+                .fetch();
     }
 
     // --- 조건 메서드 ---

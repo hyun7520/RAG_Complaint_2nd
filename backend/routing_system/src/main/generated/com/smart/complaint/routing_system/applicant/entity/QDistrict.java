@@ -1,4 +1,4 @@
-package com.smart.complaint.routing_system.applicant.entitiy;
+package com.smart.complaint.routing_system.applicant.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QDistrict extends EntityPathBase<District> {
 
-    private static final long serialVersionUID = -826126957L;
+    private static final long serialVersionUID = -779579972L;
 
     public static final QDistrict district = new QDistrict("district");
 
