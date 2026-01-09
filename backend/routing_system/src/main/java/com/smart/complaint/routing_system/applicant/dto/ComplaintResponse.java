@@ -33,8 +33,8 @@ public class ComplaintResponse {
         this.status = complaint.getStatus();
         this.urgency = complaint.getUrgency();
 
-        if (complaint.getIncidentId() != null) {
-            this.incidentId = String.format("I-2026-%04d", complaint.getIncidentId());
+        if (complaint.getIncident() != null) {
+            this.incidentId = String.format("I-2026-%04d", complaint.getIncident().getId());
         }
     }
 }

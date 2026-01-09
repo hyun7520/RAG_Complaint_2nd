@@ -66,8 +66,12 @@ public class Complaint {
     @Column(name = "current_department_id")
     private Long currentDepartmentId;
 
-    @Column(name = "incident_id")
-    private Long incidentId;
+//    @Column(name = "incident_id")
+//    private Long incidentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "incident_id")
+    private Incident incident;
 
     @Column(name = "incident_linked_at")
     private LocalDateTime incidentLinkedAt;
