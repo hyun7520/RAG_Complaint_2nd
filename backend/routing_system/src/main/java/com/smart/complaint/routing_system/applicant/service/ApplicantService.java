@@ -3,6 +3,7 @@ package com.smart.complaint.routing_system.applicant.service;
 import java.util.List;
 
 import com.smart.complaint.routing_system.applicant.repository.ComplaintRepository;
+import com.smart.complaint.routing_system.applicant.repository.ComplaintRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,13 @@ public class ApplicantService {
 
     private final ComplaintRepository complaintRepository;
 
-    public List<ComplaintDto> getAllComplaints(String applicantId) {
+    public List<ComplaintDto> getTop3RecentComplaints(String applicantId) {
 
-        complaintRepository.find
+        return complaintRepository.findTop3RecentComplaintByApplicantId(applicantId);
+    }
 
-        return null;
+    public List<ComplaintDto> getAllComplaints(String applicantId, String keyword) {
+
+        return complaintRepository.findAllByApplicantId(applicantId, null);
     }
 }
