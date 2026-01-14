@@ -19,6 +19,9 @@ public class ComplaintNormalization {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 200)
+    private String respDept;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "complaint_id", nullable = false)
     private Complaint complaint;
