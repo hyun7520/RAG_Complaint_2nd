@@ -29,21 +29,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Authorization");
         String token = null;
 
+        String path = request.getRequestURI();
+
+        // 로그를 찍어 현재 어떤 주소가 들어오는지 확인해보세요.
+        System.out.println("Request Path: " + path);
+
+        // 공무원 API 경로는 JWT 검사를 아예 하지 않음
+        if (path.startsWith("/api/agent/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 위에서 추출한 부분이 유효한 문자열인지, Bearer로 시작을 하는지 확인하고 token만 분리
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             token = bearerToken.substring(7);
         }
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            /*System.out.println("토큰 검증 성공, 유저 정보 추출 시작...");
-            String providerId = jwtTokenProvider.getProviderId(token);
+            /*
+             * System.out.println("토큰 검증 성공, 유저 정보 추출 시작...");
+             * String providerId = jwtTokenProvider.getProviderId(token);
+             * 
+             * // 유저 정보를 담은 인증 객체 생성
+             * Authentication auth = new UsernamePasswordAuthenticationToken(providerId,
+             * null,
+             * Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+             * 
+             * SecurityContextHolder.getContext().setAuthentication(auth);
+             */
 
-            // 유저 정보를 담은 인증 객체 생성
-            Authentication auth = new UsernamePasswordAuthenticationToken(providerId, null,
-                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
-
-            SecurityContextHolder.getContext().setAuthentication(auth); */
-            
             try {
                 System.out.println("토큰 검증 성공, 유저 정보 추출 시작...");
                 String providerId = jwtTokenProvider.getProviderId(token);

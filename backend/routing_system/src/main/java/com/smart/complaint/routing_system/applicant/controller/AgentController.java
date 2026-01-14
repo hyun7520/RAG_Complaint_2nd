@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -15,7 +18,10 @@ import lombok.RequiredArgsConstructor;
 import com.smart.complaint.routing_system.applicant.service.AuthService;
 import com.smart.complaint.routing_system.applicant.domain.UserRole;
 
+import org.springframework.security.core.Authentication;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "공무원 인증 API", description = "공무원/관리자 전용 인증 API (세션 방식)")
@@ -62,10 +68,8 @@ public class AgentController {
                     "  \"message\": \"로그인 성공\",\n" +
                     "  \"username\": \"admin\"\n" +
                     "}"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 (비밀번호 불일치 또는 없는 아이디)",
-                    content = @Content),
-            @ApiResponse(responseCode = "403", description = "권한 없음 (로그인은 됐으나 공무원이 아님)",
-                    content = @Content)
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 (비밀번호 불일치 또는 없는 아이디)", content = @Content),
+            @ApiResponse(responseCode = "403", description = "권한 없음 (로그인은 됐으나 공무원이 아님)", content = @Content)
     })
     @PostMapping("/login")
     public ResponseEntity<?> agentLogin(@RequestBody AgentLoginRequestDto request, HttpServletRequest httpRequest) {
@@ -79,20 +83,30 @@ public class AgentController {
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
 
-        // 세션(Session) 생성 및 저장
-        // getSession(true): 세션이 없으면 새로 만들고, 있으면 그거 가져옴
-        HttpSession session = httpRequest.getSession(true);
+        // ★ 핵심 수정 사항: 스프링 시큐리티 인증 객체 생성
+        // DB에 저장된 권한(AGENT 등)을 스프링 시큐리티가 읽을 수 있는 형태로 변환 (ROLE_ 접두사 주의)
+        String roleName = "ROLE_" + user.getRole().name();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                user.getUsername(),
+                null,
+                List.of(new SimpleGrantedAuthority(roleName)));
 
-        // 세션에 "LOGIN_USER"라는 이름으로 유저 정보(객체)를 통째로 저장
+        // ★ 시큐리티 컨텍스트에 인증 정보 저장 (이걸 해야 시큐리티가 "로그인 성공했네!"라고 인정함)
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 세션 생성 및 유지
+        HttpSession session = httpRequest.getSession(true);
         session.setAttribute("LOGIN_USER", user);
 
-        // 세션 유지 시간 설정 (초 단위) -> 1800초 = 30분
-        // 30분 동안 아무런 요청 없으면 자동으로 로그아웃됨 (보안 필수 요건)
+        // 세션에 시큐리티 컨텍스트도 명시적으로 저장 (세션 방식일 때 필수)
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
         session.setMaxInactiveInterval(1800);
+
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("message", "로그인 성공");
         responseBody.put("username", user.getUsername());
-        responseBody.put("role", user.getRole()); // "ADMIN" 또는 "AGENT" 값을 보냄
+        responseBody.put("role", user.getRole());
 
         // 예: { "message": "로그인 성공", "username": "admin1", "role": "ADMIN" }
         return ResponseEntity.ok(responseBody);

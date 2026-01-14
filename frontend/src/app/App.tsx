@@ -112,7 +112,7 @@ function AppContent() {
         <Route path="/applicant/find-id" element={<ApplicantFindIdPage />} />
         <Route path="/applicant/find-password" element={<ApplicantResetPwPage />} />
         <Route path="/applicant/complaints/:id" element={<ApplicantComplaintDetailPage />} />
-        <Route path="/applicant/complaints" element={<ApplicantComplaintsPage />} />
+        {/*<Route path="/applicant/complaints" element={<ApplicantComplaintsPage />} /> */}
       </Routes>
     );
   }

@@ -70,6 +70,7 @@
     "@tailwindcss/vite": "4.1.12",
     "@types/d3": "^7.4.3",
     "@types/d3-cloud": "^1.2.9",
+    "@types/node": "^25.0.8",
     "@vitejs/plugin-react": "4.7.0",
     "tailwindcss": "4.1.12",
     "vite": "6.3.5"
