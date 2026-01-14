@@ -67,8 +67,7 @@ public class IncidentController {
                         .originalId(c.getId())
                         .id(String.format("C2026-%04d", c.getId()))
                         .title(c.getTitle())
-                        .receivedAt(c.getCreatedAt() != null ? c.getCreatedAt().format(formatter) : "-")
-                        .urgency(c.getUrgency())
+                        .receivedAt(c.getReceivedAt().format(formatter))
                         .status(c.getStatus())
                         .build())
                 .collect(Collectors.toList());

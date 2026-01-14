@@ -94,12 +94,13 @@ public class ApplicantController {
 
     @Operation(summary = "가장 최근 작성한 민원 3개 조회", description = "JWT에서 사용자의 아이디를 확인하고 이를 통해 민원 조회")
     @GetMapping("/api/applicant/complaints/top3")
-    public ResponseEntity<List<ComplaintDto>> getTop3RecentComplaints(@AuthenticationPrincipal Long applicantId) {
+    public ResponseEntity<List<ComplaintDto>> getTop3RecentComplaints(@AuthenticationPrincipal String applicantId) {
 
         System.out.println("현재 로그인한 사용자:" + applicantId);
         
         // 현재 로그인한 사용자의 최근 3개 민원 조회
-        List<ComplaintDto> complaints = applicantService.getTop3RecentComplaints(applicantId);
+        Long id = Long.parseLong(applicantId);
+        List<ComplaintDto> complaints = applicantService.getTop3RecentComplaints(id);
 
         return ResponseEntity.ok(complaints);
     }

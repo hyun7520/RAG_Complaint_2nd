@@ -58,7 +58,6 @@ public class ComplaintDetailResponse {
                 ? c.getReceivedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                 : "";
         this.status = c.getStatus();
-        this.urgency = c.getUrgency();
         this.departmentName = deptName != null ? deptName : "미배정";
         this.category = "일반행정";
 

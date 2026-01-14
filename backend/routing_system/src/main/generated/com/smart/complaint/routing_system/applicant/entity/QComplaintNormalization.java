@@ -48,8 +48,6 @@ public class QComplaintNormalization extends EntityPathBase<ComplaintNormalizati
 
     public final StringPath targetObject = createString("targetObject");
 
-    public final StringPath urgencySignal = createString("urgencySignal");
-
     public QComplaintNormalization(String variable) {
         this(ComplaintNormalization.class, forVariable(variable), INITS);
     }

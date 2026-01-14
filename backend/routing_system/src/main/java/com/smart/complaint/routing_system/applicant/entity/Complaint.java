@@ -48,9 +48,6 @@ public class Complaint {
     @Column(columnDefinition = "TEXT")
     private String answer;
 
-    @Column(name = "answered_at") // 답변 완료 시간 (필요시 추가)
-    private LocalDateTime answeredAt;
-
     @Column(name = "address_text")
     private String addressText;
 
@@ -125,7 +122,6 @@ public class Complaint {
     // 답변 완료 및 종결 (Complete)
     public void completeAnswer(String finalAnswer) {
         this.answer = finalAnswer;
-        this.answeredAt = LocalDateTime.now();
         this.status = ComplaintStatus.RESOLVED;
         this.closedAt = LocalDateTime.now();
     }
