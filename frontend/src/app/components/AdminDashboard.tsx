@@ -62,9 +62,11 @@ const processingTimeData = [
 ];
 
 const recurringIncidents = [
-  { id: 'I-2026-001', title: '역삼동 도로 파손 집중 발생', count: 12, trend: '+3' },
-  { id: 'I-2025-342', title: '삼성동 불법주차 반복', count: 15, trend: '+5' },
-  { id: 'I-2025-340', title: '대치동 소음 민원', count: 8, trend: '+2' },
+  { id: 'I-2026-001', title: '강일동 도로 파손 집중 발생', count: 12, trend: '+8' },
+  { id: 'I-2025-342', title: '고덕동 불법주차 반복', count: 15, trend: '+5' },
+  { id: 'I-2025-340', title: '명일동 소음 민원', count: 8, trend: '+4' },
+  { id: 'I-2025-340', title: '상일동 신호등 민원', count: 8, trend: '+3' },
+
 ];
 
 const hotspotData = [
@@ -107,8 +109,8 @@ export function AdminDashboard() {
       </div>
 
       {/* Global Filters */}
-      <div className="bg-card border-b border-border p-4">
-        <div className="flex flex-wrap gap-2 items-center">
+      {/* <div className="bg-card border-b border-border p-4"> */}
+        {/* <div className="flex flex-wrap gap-2 items-center">
           <Select defaultValue="7d">
             <SelectTrigger className="w-32 bg-input-background">
               <SelectValue placeholder="기간" />
@@ -119,7 +121,7 @@ export function AdminDashboard() {
               <SelectItem value="30d">최근 30일</SelectItem>
               <SelectItem value="custom">직접 선택</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
           {/* <Select defaultValue="all">
             <SelectTrigger className="w-32 bg-input-background">
@@ -155,12 +157,12 @@ export function AdminDashboard() {
             </SelectContent>
           </Select> */}
 
-          <Button variant="ghost" size="sm" className="ml-auto">
+          {/* <Button variant="ghost" size="sm" className="ml-auto">
             <X className="h-4 w-4 mr-1" />
             필터 초기화
           </Button>
         </div>
-      </div>
+      </div> */}
 
       {/* Widgets Grid */}
       <div className="flex-1 overflow-auto p-6">
@@ -171,17 +173,17 @@ export function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">민원 접수 추이</CardTitle>
                 <div className="flex gap-2">
-                  <Select defaultValue="all">
+                  {/* <Select defaultValue="all">
                     <SelectTrigger className="w-32 bg-input-background">
                       <SelectValue placeholder="부서" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체 부서</SelectItem>
                       <SelectItem value="road">도로관리과</SelectItem>
-                      <SelectItem value="env">환경관리과</SelectItem>
+                      <SelectItem value="env">환경관리과</SelectItem> */}
                       {/* 실제 부서 데이터 가져오게 */}
-                    </SelectContent>
-                  </Select>
+                    {/* </SelectContent>
+                  </Select> */}
                 </div>
               </div>
             </CardHeader>
@@ -199,36 +201,49 @@ export function AdminDashboard() {
           </Card>
 
 
-          {/* Widget 4: 처리시간 분포 */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">처리 소요시간 분포</CardTitle>
-                <div className="flex gap-2">
-                  <Select defaultValue="all">
-                    <SelectTrigger className="w-32 bg-input-background">
-                      <SelectValue placeholder="부서" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">전체 부서</SelectItem>
-                      <SelectItem value="road">도로관리과</SelectItem>
-                      <SelectItem value="env">환경관리과</SelectItem>
-                      {/* 실제 부서 데이터 가져오게 */}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* <div className="flex gap-2">
+        <Select defaultValue="all">
+          <SelectTrigger className="w-32 bg-input-background">
+            <SelectValue placeholder="부서" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">전체 부서</SelectItem>
+            <SelectItem value="road">도로관리과</SelectItem>
+            <SelectItem value="env">환경관리과</SelectItem>
+          </SelectContent>
+        </Select>
+      </div> */}
               </div>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={processingTimeData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis type="number" tick={{ fontSize: 12 }} />
-                  <YAxis dataKey="range" type="category" tick={{ fontSize: 11 }} width={80} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#10b981" />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="h-[250px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={processingTimeData}
+                      label={({ name, count }) => `${name}`}
+                      labelLine={false}
+                      cx="50%"
+                      cy="45%" // 범례(Legend) 공간 확보를 위해 약간 위로 올림
+                      outerRadius={80}
+                      dataKey="count"
+                      nameKey="range"
+                    >
+                      {/* 5가지 구간에 맞춘 색상 할당 */}
+                      <Cell fill="#10b981" /> {/* 0-4시간 */}
+                      <Cell fill="#3b82f6" /> {/* 4-8시간 */}
+                      <Cell fill="#f59e0b" /> {/* 8-12시간 */}
+                      <Cell fill="#ef4444" /> {/* 12-24시간 */}
+                      <Cell fill="#8b5cf6" /> {/* 24시간+ */}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
 
@@ -306,7 +321,7 @@ export function AdminDashboard() {
           {/* Widget 6: 사건 재발 Top */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">사건 재발 Top</CardTitle>
+              <CardTitle className="text-base">반복 민원 Top</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -332,7 +347,7 @@ export function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">민원 집중 지역</CardTitle>
                 <div className="flex gap-2">
-                  <Select value={mapView} onValueChange={(v: any) => setMapView(v)}>
+                  {/* <Select value={mapView} onValueChange={(v: any) => setMapView(v)}>
                     <SelectTrigger className="w-24 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
@@ -347,7 +362,7 @@ export function AdminDashboard() {
                     onClick={() => setShowSurgeOnly(!showSurgeOnly)}
                   >
                     급증만
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </CardHeader>
