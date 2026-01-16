@@ -103,10 +103,10 @@ export function AdminDashboard() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="border-b border-border bg-card px-6 py-4">
-        <h1>민원 처리 현황</h1>
-        <p className="text-sm text-muted-foreground">사전 집계된 지표</p>
-      </div>
+      <div className="h-16 border-b border-border bg-card px-6 shadow-sm flex items-center gap-3 shrink-0">
+          <h1 className="text-2.5xl font-bold text-slate-900">민원 처리 현황</h1>
+          <p className="text-sm text-slate-400 font-medium pt-1">사전 집계된 지표</p>
+        </div>
 
       {/* Global Filters */}
       {/* <div className="bg-card border-b border-border p-4"> */}
@@ -332,7 +332,7 @@ export function AdminDashboard() {
                       <div className="text-xs text-muted-foreground">{incident.id}</div>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                      <Badge variant="secondary">{incident.count}건</Badge>
+                      {/* <Badge variant="secondary">{incident.count}건</Badge> */}
                       <Badge className="bg-red-100 text-red-700 text-xs">{incident.trend}</Badge>
                     </div>
                   </div>
